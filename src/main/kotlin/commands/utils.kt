@@ -56,7 +56,7 @@ fun utils() = commands("Utilities"){
             message?.channel?.createEmbed {
                 title="Technical information"
                 description="Displays technical info about the bot"
-                addField("Source", "Source Link here")
+                addField("Source", "https://github.com/gjoedev/KotlinHypixelBot")
                 addField("Kotlin", "Bot uses Kotlin as main language, more here https://kotlinlang.org/")
                 addField("DiscordKt", "DiscordKt is used for connection to the Discord API, more here https://discordkt.github.io/")
                 addField("KoPixel", "KoPixel is used for connection to Hypixel API, more here https://github.com/ryanhcode/KoPixel")
