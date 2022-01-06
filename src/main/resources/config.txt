@@ -1,1 +1,1 @@
-Bot Token/Api Key/Prefix
+Bot Token/Hypixel API key/Prefix
