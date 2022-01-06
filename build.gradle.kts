@@ -15,7 +15,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
     implementation("me.jakejmattson:DiscordKt:0.22.0")
     implementation("com.github.ryanhcode:KoPixel:0.2")
 }

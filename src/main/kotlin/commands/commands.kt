@@ -1,21 +1,24 @@
 package commands
-import com.ryanhcode.kopixel.KoPixelAPI
 import me.jakejmattson.discordkt.api.dsl.commands
 import com.ryanhcode.kopixel.player.SocialMediaLinks
 import dev.kord.core.behavior.channel.createEmbed
 import me.jakejmattson.discordkt.api.arguments.AnyArg
 import me.jakejmattson.discordkt.api.extensions.addField
 import java.lang.IllegalStateException
+import com.ryanhcode.kopixel.KoPixelAPI.Companion.NewKoPixelAPI
+import java.io.File
 
-val key = "Hypixel API token"
-val api = KoPixelAPI.NewKoPixelAPI(key)
+val apikey = getKey()
+val api = NewKoPixelAPI(apikey)
+
+
 fun status() = commands("Hypixel"){
     command("online"){
         description = "Checks to see if a player is online"
         execute(AnyArg){
             val player = args.first
             try {
-                val online = api.getSync(player).online()
+                api.getSync(player)
             } catch (e: IllegalStateException){
                 message?.channel?.createEmbed {
                     title = "Error"
@@ -34,13 +37,17 @@ fun status() = commands("Hypixel"){
                 return@execute
             }
             val online = api.getSync(player).online()
-            var fonline:String? = null
+            var fonline:String?
+            var cgame:String? = null
             if(online){fonline="Online"}else{fonline="Offline"}
+
+            if(online){cgame = api.getSync(player).mostRecentGameType}
 
             message?.channel?.createEmbed {
                 title = "Player Status"
                 description = "Checks weather a player is online or not"
                 addField("Player: " + api.getSync(player).name, "Status: $fonline")
+                if(online){addField("Most recent game", "$cgame")}
             }
         }
     }
@@ -70,10 +77,10 @@ fun status() = commands("Hypixel"){
                         description="Returns rank of player"
                         addField("Player: ${api.getSync(player).name}", "Rank: None")
                     }
-                    srank= false;
+                    srank= false
                     return@execute
                 }
-                srank = true;
+                srank = true
             }
             var rr:String? = null
             if(srank == false){
@@ -165,10 +172,32 @@ fun status() = commands("Hypixel"){
             }
         }
     }
+    command("uuid"){
+        description="Returns UUID of player"
+        execute(AnyArg){
+            val player = args.first
+            try{
+                api.getSync(player)
+            }catch (e:java.lang.IllegalStateException){
+                message?.channel?.createEmbed {
+                    title = "Error"
+                    description = "Encountered an error while processing request"
+                    addField("Supposed Cause", "User does not exist")
+                    addField("Error info", "```${e.toString()}```")
+                }
+                return@execute
+            }
+            val uuid = api.getSync(player).uuid.toString()
+            message?.channel?.createEmbed {
+                title="UUID"
+                description="Returns UUID of player"
+                addField("Player: ${api.getSync(player).name}", "UUID: $uuid")
+            }
+        }
+    }
 }
 fun returnreadablerank(r: String): String?{
     val rank = r.toString()
-    var out:String?
     if(rank == "MVP_PLUS") return("MVP Plus")
     if(rank == "MVP") return("MVP")
     if(rank == "VIP") return("VIP")
@@ -179,4 +208,10 @@ fun returnreadablerank(r: String): String?{
     if(rank == "YOUTUBER") return("Youtuber")
     if(rank == "NORMAL") return("Normal")
     return("None")
+}
+fun getKey(): String{
+    val path = System.getProperty("user.dir")
+    val configfile:String = File("$path/src/main/resources/config.txt").readText()
+    val cfgarray = configfile.split("/")
+    return cfgarray[1]
 }

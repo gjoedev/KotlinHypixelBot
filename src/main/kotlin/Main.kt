@@ -1,11 +1,13 @@
 import com.ryanhcode.kopixel.KoPixelAPI
 import me.jakejmattson.discordkt.api.dsl.bot
-import com.ryanhcode.kopixel.KoPixelAPI.Companion.NewKoPixelAPI
+import java.io.File
 
+var cfgarray:List<String>? = null
 fun main(){
-
-    bot("Your token"){
-        prefix{"*"}
+    ReadConfig()
+    println(cfgarray?.get(0).toString())
+    bot("${cfgarray?.get(0).toString()}"){
+        prefix{cfgarray?.get(2).toString()}
         configure {
             allowMentionPrefix = true
             commandReaction = null
@@ -15,3 +17,10 @@ fun main(){
         }
     }
 }
+
+fun ReadConfig(){
+    val path = System.getProperty("user.dir")
+    val configfile:String = File("$path/src/main/resources/config.txt").readText()
+    cfgarray = configfile.split("/")
+}
+
